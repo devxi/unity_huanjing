@@ -22,14 +22,18 @@ public enum PlayerDieType
 public class PlayerController : MonoBehaviour
 {
 
+    public Transform RayDown, RayLeft, RayRight;
+    public LayerMask platformLayer, obstacleLayer;
+
     private ManagerVars vars;
     private Vector2 curPlatformPos = Vector2.zero; //当前玩家所在平台位置
     private PlayerState playerState = PlayerState.Idle;
     private Rigidbody2D rigidbody2d;
-    public Transform rayDown, rayLeft, rayRight;
-    public LayerMask platformLayer, obstacleLayer;
     private SpriteRenderer sr;
     private BoxCollider2D boxCollider2d;
+    private bool isDie = false;
+    private bool jumpAnimateFinish;
+
     private void Awake()
     {
         vars = ManagerVars.GetManagerVars();
@@ -46,6 +50,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.CurGameStage != GameStage.Playing)
+        {
+            return;
+        }
+
+        if (isDie)
+        {
+            return;
+        }
+
         var touchPos = Input.mousePosition;
         if (Input.GetMouseButtonDown(0))
         {
@@ -57,7 +71,6 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.LogWarning("点击屏幕的下半部分才能触发跳跃");
             }
-
         }
     }
 
@@ -82,19 +95,24 @@ public class PlayerController : MonoBehaviour
         }
 
         playerState = PlayerState.Jumping;
+
+        void onJumpFinished()
+        {
+            jumpAnimateFinish = true;
+        }
         
         if (jumpDirection == JumpDirection.Left)
         {
             var duration = 0.2f;
             var targetPos = new Vector2(transform.position.x - vars.jumpXPos,transform.position.y + vars.jumpYPos);
-            transform.DOMove(targetPos, duration);
+            transform.DOMove(targetPos, duration).OnComplete(onJumpFinished);
             transform.localScale = new Vector3(-1,1,1);
         }
         else if (jumpDirection == JumpDirection.Right)
         {
             var duration = 0.2f;
             var targetPos = new Vector2(transform.position.x + vars.jumpXPos,transform.position.y + vars.jumpYPos);
-            transform.DOMove(targetPos, duration);
+            transform.DOMove(targetPos, duration).OnComplete(onJumpFinished); ;
             transform.localScale = new Vector3(1,1,1);
         }
         
@@ -111,19 +129,47 @@ public class PlayerController : MonoBehaviour
         //继续生成平台
         EventCenter.Broadcast(EventDefine.DecidePath);
         EventCenter.Broadcast(EventDefine.AddScore);
-    }
+
+        //跳完后， 射线检测 脚底下有没有 平台 没有就挂了
+
+        //只检测  platformLayer 层
+        RaycastHit2D hit = Physics2D.Raycast(RayDown.position, Vector2.down, 1f, platformLayer);
+        Debug.DrawRay(RayDown.position, Vector3.down, Color.white);
+        if (hit.collider && hit.collider.gameObject.CompareTag("Platform"))
+        {
+            //有平台
+            Debug.Log("有平台");
+        }
+        else
+        {
+
+            if (hit.collider == null)
+            {
+                Debug.Log("没有平台, 射线检测不collider");
+            }
+            else
+            {
+                Debug.Log("没有平台, 射线检测到的物体tag :" + hit.collider.tag + ", g tag" + hit.collider.gameObject.tag);
+            }
+            //没平台
+            //Time.timeScale = 0;
+            Die(PlayerDieType.FallingDie);
+        }
+}
 
     void Die(PlayerDieType dieType)
     {
-        Debug.Log("玩家死亡，游戏结束");
+        isDie = true;
         if (dieType== PlayerDieType.TriggerObstacle)
         {
+            Debug.Log("玩家跌落，游戏结束");
             //播放死亡特效
             GameObject dieEffect = Instantiate(vars.deathEffect);
             dieEffect.transform.position = transform.position;
+            //玩家跌落死亡时 让玩家层级比平台低
+            GetComponent<SpriteRenderer>().sortingLayerName = "Default";
         }
         Invoke("ShowGameOverPanel", 2.0f);
-        gameObject.SetActive(false);
     }
     
 
@@ -145,13 +191,16 @@ public class PlayerController : MonoBehaviour
         get => new Vector2(curPlatformPos.x + vars.nextXPos, curPlatformPos.y + vars.nextYPos);
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionStay2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Platform"))
         {
-            //玩家和平台发送碰撞 才算一次跳跃完毕
-            curPlatformPos = other.transform.position;
-            OnJumpFinished();
+            //跳跃的dotween完毕 且 碰撞到平台， 才算做跳跃完毕 
+            if (playerState == PlayerState.Jumping && jumpAnimateFinish)
+            {
+                curPlatformPos = other.transform.position;
+                OnJumpFinished();
+            }
         }
 
     }

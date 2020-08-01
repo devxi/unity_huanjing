@@ -18,7 +18,7 @@ namespace Game
 
         private void Update()
         {
-            if (!target && GameObject.FindGameObjectWithTag("Player"))
+            if (target == null && null != GameObject.FindGameObjectWithTag("Player"))
             {
                 target = GameObject.FindGameObjectWithTag("Player").transform;
                 offset = target.position - transform.position;
@@ -27,17 +27,16 @@ namespace Game
 
         private void FixedUpdate()
         {
-            if (target)
+
+            if (target != null)
             {
-                if (target.position.y > transform.position.y)
-                {
-                    // transform.position = new Vector3(target.position.x, target.position.y, transform.position.z);
-                    float x = Mathf.SmoothDamp(transform.position.x, target.position.x - offset.x, ref velocity.x,
-                        0.05f);
-                    float y = Mathf.SmoothDamp(transform.position.y, target.position.y - offset.y, ref velocity.y,
-                        0.05f);
-                    transform.position = new Vector3(x, y, transform.position.z);
-                }
+                float posX = Mathf.SmoothDamp(transform.position.x,
+                    target.position.x - offset.x, ref velocity.x, 0.05f);
+                float posY = Mathf.SmoothDamp(transform.position.y,
+                   target.position.y - offset.y, ref velocity.y, 0.05f);
+
+                if (posY > transform.position.y)
+                    transform.position = new Vector3(posX, posY, transform.position.z);
             }
         }
 
