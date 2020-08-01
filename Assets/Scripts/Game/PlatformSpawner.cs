@@ -12,6 +12,7 @@ public enum PlatformGroupType
 public class PlatformSpawner : MonoBehaviour
 {
     private int SpawnPlatformCount = 5;
+    private int SpawnSpikeFakePlatformCount = 5;// 在钉子平台 后面继续生产5个迷惑平台
     
     private ManagerVars vars;
 
@@ -168,13 +169,23 @@ public class PlatformSpawner : MonoBehaviour
 
     GameObject SpawnSpikePlatform()
     {
-        //左平台钉子生成在右边 右平台钉子生成在左边
-        
         //钉子生成方向
         var isLeftSpike = !isLeftSpawn;
         var parent = GameManager.Instance.PlatformContainer;
-        GameObject go =  isLeftSpike ? Instantiate(vars.spikePlatformLeft, parent) : Instantiate(vars.spikePlatformRight, parent);
+        GameObject go = isLeftSpike ? Instantiate(vars.spikePlatformLeft, parent) : Instantiate(vars.spikePlatformRight, parent);
         SetPlatormPos(go);
+
+        var platformWithSpike = go.transform.Find("PlatformWithSpike");
+        //迷惑平台生成
+        for (int i = 1; i <= SpawnSpikeFakePlatformCount; i++)
+        {
+            GameObject fakePlatform = Instantiate(vars.normalPlatfrom, GameManager.Instance.PlatformContainer);
+            var x = isLeftSpike ? platformWithSpike.position.x - i * vars.nextXPos : platformWithSpike.position.x + i * vars.nextXPos;
+            var y = platformWithSpike.position.y + i * vars.nextYPos;
+            fakePlatform.transform.position = new Vector2(x, y);
+            fakePlatform.GetComponent<PlatformScript>().Init(selectPlatformSprite);
+        }
+
         return go;
     }
     
