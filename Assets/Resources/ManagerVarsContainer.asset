@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f457933fdcf09479a4ed2114622bbd, type: 3}
+  m_Name: ManagerVarsContainer
+  m_EditorClassIdentifier: 
+  GamePanel: {fileID: 6729065882369058673, guid: c3978601e70c14f41bb9fa7a8680cf4a,
+    type: 3}
+  GameOverPanel: {fileID: 2406186603095227743, guid: 547fa1e64d309584b91b6bdaa27a3852,
+    type: 3}
+  Player: {fileID: 8186594616551582754, guid: 8d5f94fa4c1a7aa4aa3dafc7006a129d, type: 3}
+  bgThemeSpriteList:
+  - {fileID: 21300000, guid: 9c7f8abaceea58e4db628c3935ed7c4a, type: 3}
+  - {fileID: 21300000, guid: 5feddf0396f8fd842b6a2034a343e884, type: 3}
+  - {fileID: 21300000, guid: 274864b118ac4f54589e32e7035cd77f, type: 3}
+  - {fileID: 21300000, guid: 81cb795749aefac4ea7663bc3f7f71fb, type: 3}
+  platformThemeSpriteList:
+  - {fileID: 21300000, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
+  - {fileID: 21300012, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
+  - {fileID: 21300004, guid: 20da7e56cbb26b3498b25fb61fa9a7ff, type: 3}
+  normalPlatfrom: {fileID: 1718202181510176, guid: 50df142424d4a2c44a45fb935e74a171,
+    type: 3}
+  commonPlatformGroup:
+  - {fileID: 1718202181510176, guid: 03822589b3646994198e9bc0f7842616, type: 3}
+  - {fileID: 1060829081277170, guid: 911f5eddba9f9a547a36f873855154d1, type: 3}
+  - {fileID: 1862529822596274, guid: 77d6754891a12a94ba01a3b658021ec3, type: 3}
+  - {fileID: 1505930955668414, guid: 530fc684d95be154a906273ddaa2f96d, type: 3}
+  - {fileID: 1718202181510176, guid: edcd1bb6ba128f3498ab7cb2754ae618, type: 3}
+  grassPlatformGroup:
+  - {fileID: 1189566386295524, guid: 7cff1ef5dba437c469dfe6f84ec04f5c, type: 3}
+  - {fileID: 1552161325273618, guid: 0268eb9dbc42fef429b565ca74b7b3b1, type: 3}
+  winterPlatformGroup:
+  - {fileID: 1370544064376614, guid: 1ca84a38f735ec84ba5ca2a31fc441a5, type: 3}
+  - {fileID: 1989976659917776, guid: 2b64d0d0a0d0d6c468f58d246222415b, type: 3}
+  - {fileID: 1648357431825086, guid: 4093d62a5e76d5743a4222f96b4a83b7, type: 3}
+  starPlatformPos: {x: 0, y: -2.4}
+  nextXPos: 0.554
+  nextYPos: 0.645
+  jumpYPos: 1
+  jumpXPos: 0.54
+  spawnerDiamondChance: 0.21
+  spikePlatformLeft: {fileID: 1307385245424574, guid: 1218ee35c8e636a449e5a21e6ab1d3bd,
+    type: 3}
+  spikePlatformRight: {fileID: 1147806299915752, guid: 18add40332af93a4aa72d8c27d92f639,
+    type: 3}
+  deathEffect: {fileID: 7235830945459188890, guid: be2f90d4aeb8dbd48b5c44389c53d9d6,
+    type: 3}
+  diamondPre: {fileID: 1244566891189135354, guid: 9bc5825b42949cc4a8bad28f9ded666b,
+    type: 3}
+  jumpClip: {fileID: 0}
+  fallClip: {fileID: 0}
+  hitClip: {fileID: 0}
+  diamondClip: {fileID: 0}
+  buttonClip: {fileID: 0}
+  musicOn: {fileID: 0}
+  musicOff: {fileID: 0}
