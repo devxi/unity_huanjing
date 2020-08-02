@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
 
     public Transform PlatformContainer;
 
+    [HideInInspector]
+    public AudioSource GameAudioSource;
+
     public GameStage CurGameStage => curGameStage;
 
     public int GameScore => gameScore;
@@ -26,6 +29,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
         curGameStage = GameStage.None;
         PlatformContainer = GameObject.Find("PlatformContainer").transform;
+        GameAudioSource = GetComponent<AudioSource>();
         EventCenter.AddListener(EventDefine.AddScore, AddScore);
         EventCenter.AddListener(EventDefine.AddDiamond, AddDiamond );
     }

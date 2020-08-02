@@ -16,7 +16,7 @@ public class PlatformScript : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private BoxCollider2D _boxCollider2D;
     
-    private float fallingDownTime = 1.0f;
+    private float fallingDownTime = 2.0f;
 
     private bool isNeedFallingDown;
 
@@ -65,7 +65,7 @@ public class PlatformScript : MonoBehaviour
         }
     }
     
-    private void OnCollisionExit2D(Collision2D other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
         //当玩家跳到平台上时触发
         if (other.gameObject.CompareTag("Player"))

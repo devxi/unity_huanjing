@@ -179,7 +179,7 @@ public class PlatformSpawner : MonoBehaviour
         //迷惑平台生成
         for (int i = 1; i <= SpawnSpikeFakePlatformCount; i++)
         {
-            GameObject fakePlatform = Instantiate(vars.normalPlatfrom, GameManager.Instance.PlatformContainer);
+            GameObject fakePlatform = Instantiate(vars.normalPlatfrom, go.transform);
             var x = isLeftSpike ? platformWithSpike.position.x - i * vars.nextXPos : platformWithSpike.position.x + i * vars.nextXPos;
             var y = platformWithSpike.position.y + i * vars.nextYPos;
             fakePlatform.transform.position = new Vector2(x, y);

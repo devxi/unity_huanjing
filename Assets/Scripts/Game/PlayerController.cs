@@ -27,8 +27,10 @@ public enum PlayerDieType
 public class PlayerController : MonoBehaviour
 {
 
+    public AudioSource audioSource;
     public Transform RayDown, RayLeft, RayRight;
     public LayerMask platformLayer, obstacleLayer;
+
 
     private ManagerVars vars;
     private Vector2 curPlatformPos = Vector2.zero; //当前玩家所在平台位置
@@ -38,9 +40,11 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D boxCollider2d;
     private bool isDie = false;
 
+
     private void Awake()
     {
         vars = ManagerVars.GetManagerVars();
+        //audioSource = 
         rigidbody2d = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         boxCollider2d = GetComponent<BoxCollider2D>();
@@ -76,6 +80,7 @@ public class PlayerController : MonoBehaviour
                 Debug.LogWarning("点击屏幕的下半部分才能触发跳跃");
             }
         }
+        Debug.DrawRay(RayDown.position, Vector3.down, Color.red);
     }
 
 
@@ -97,7 +102,7 @@ public class PlayerController : MonoBehaviour
             //正在跳跃过程不能再跳了
             return;
         }
-
+        GameManager.Instance.GameAudioSource.PlayOneShot(vars.jumpClip);
         playerState = PlayerState.Jumping;
         
         if (jumpDirection == JumpDirection.Left)
@@ -132,17 +137,14 @@ public class PlayerController : MonoBehaviour
 
         //只检测  platformLayer 层
         RaycastHit2D hit = Physics2D.Raycast(RayDown.position, Vector2.down, 1f, platformLayer);
-        Debug.DrawRay(RayDown.position, Vector3.down, Color.white);
         if (hit.collider && hit.collider.gameObject.CompareTag("Platform"))
         {
             //有平台
-            Debug.Log("有平台");
-                    EventCenter.Broadcast(EventDefine.AddScore);
+            EventCenter.Broadcast(EventDefine.AddScore);
             curPlatformPos = hit.collider.transform.position;
             #if DEBUG
             hit.collider.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
             #endif
-
         }
         else
         {
@@ -166,6 +168,7 @@ public class PlayerController : MonoBehaviour
         if (dieType== PlayerDieType.TriggerObstacle)
         {
             Debug.Log("玩家跌落，游戏结束");
+            GameManager.Instance.GameAudioSource.PlayOneShot(vars.fallClip);
             //播放死亡特效
             GameObject dieEffect = Instantiate(vars.deathEffect);
             dieEffect.transform.position = transform.position;
@@ -200,6 +203,7 @@ public class PlayerController : MonoBehaviour
         //玩家吃到钻石
         if (other.gameObject.CompareTag("Pickup_Diamond"))
         {
+            GameManager.Instance.GameAudioSource.PlayOneShot(vars.diamondClip);
             EventCenter.Broadcast(EventDefine.AddDiamond);
             Destroy(other.gameObject);
         }

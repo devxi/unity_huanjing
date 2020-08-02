@@ -25,7 +25,7 @@ public class ManagerVars : ScriptableObject
 
     public float nextXPos = 0.554f, nextYPos = 0.645f;
 
-    public float jumpYPos = 1.0f, jumpXPos = 0.54f;
+    public float jumpYPos = 0.5f, jumpXPos = 0.54f;
 
     /// <summary>
     /// 钻石生成几率
