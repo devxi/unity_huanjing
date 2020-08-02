@@ -1,11 +1,16 @@
-﻿using System;
+﻿
+
+//#define DEBUG 
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Mail;
 using DG.Tweening;
 using Game;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+
+
 
 public enum PlayerDieType 
 {
@@ -32,7 +37,6 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sr;
     private BoxCollider2D boxCollider2d;
     private bool isDie = false;
-    private bool jumpAnimateFinish;
 
     private void Awake()
     {
@@ -95,24 +99,19 @@ public class PlayerController : MonoBehaviour
         }
 
         playerState = PlayerState.Jumping;
-
-        void onJumpFinished()
-        {
-            jumpAnimateFinish = true;
-        }
         
         if (jumpDirection == JumpDirection.Left)
         {
             var duration = 0.2f;
             var targetPos = new Vector2(transform.position.x - vars.jumpXPos,transform.position.y + vars.jumpYPos);
-            transform.DOMove(targetPos, duration).OnComplete(onJumpFinished);
+            transform.DOMove(targetPos, duration).OnComplete(OnJumpFinished);
             transform.localScale = new Vector3(-1,1,1);
         }
         else if (jumpDirection == JumpDirection.Right)
         {
             var duration = 0.2f;
             var targetPos = new Vector2(transform.position.x + vars.jumpXPos,transform.position.y + vars.jumpYPos);
-            transform.DOMove(targetPos, duration).OnComplete(onJumpFinished); ;
+            transform.DOMove(targetPos, duration).OnComplete(OnJumpFinished); ;
             transform.localScale = new Vector3(1,1,1);
         }
         
@@ -128,7 +127,6 @@ public class PlayerController : MonoBehaviour
         playerState = PlayerState.Idle;
         //继续生成平台
         EventCenter.Broadcast(EventDefine.DecidePath);
-        EventCenter.Broadcast(EventDefine.AddScore);
 
         //跳完后， 射线检测 脚底下有没有 平台 没有就挂了
 
@@ -139,10 +137,15 @@ public class PlayerController : MonoBehaviour
         {
             //有平台
             Debug.Log("有平台");
+                    EventCenter.Broadcast(EventDefine.AddScore);
+            curPlatformPos = hit.collider.transform.position;
+            #if DEBUG
+            hit.collider.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+            #endif
+
         }
         else
         {
-
             if (hit.collider == null)
             {
                 Debug.Log("没有平台, 射线检测不collider");
@@ -155,7 +158,7 @@ public class PlayerController : MonoBehaviour
             //Time.timeScale = 0;
             Die(PlayerDieType.FallingDie);
         }
-}
+    }
 
     void Die(PlayerDieType dieType)
     {
@@ -191,22 +194,10 @@ public class PlayerController : MonoBehaviour
         get => new Vector2(curPlatformPos.x + vars.nextXPos, curPlatformPos.y + vars.nextYPos);
     }
 
-    private void OnCollisionStay2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Platform"))
-        {
-            //跳跃的dotween完毕 且 碰撞到平台， 才算做跳跃完毕 
-            if (playerState == PlayerState.Jumping && jumpAnimateFinish)
-            {
-                curPlatformPos = other.transform.position;
-                OnJumpFinished();
-            }
-        }
-
-    }
     
     private void OnTriggerEnter2D(Collider2D other)
     {
+        //玩家吃到钻石
         if (other.gameObject.CompareTag("Pickup_Diamond"))
         {
             EventCenter.Broadcast(EventDefine.AddDiamond);
