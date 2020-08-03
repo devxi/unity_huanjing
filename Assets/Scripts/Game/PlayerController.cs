@@ -143,7 +143,7 @@ public class PlayerController : MonoBehaviour
             EventCenter.Broadcast(EventDefine.AddScore);
             curPlatformPos = hit.collider.transform.position;
             #if DEBUG
-            hit.collider.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+            // hit.collider.gameObject.GetComponentInChildren<SpriteRenderer>().color = Color.red;
             #endif
         }
         else

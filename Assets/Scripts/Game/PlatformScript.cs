@@ -65,7 +65,7 @@ public class PlatformScript : MonoBehaviour
         }
     }
     
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionStay2D(Collision2D other)
     {
         //当玩家跳到平台上时触发
         if (other.gameObject.CompareTag("Player"))
